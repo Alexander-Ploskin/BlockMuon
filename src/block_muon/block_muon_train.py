@@ -524,7 +524,7 @@ if __name__ == "__main__":
                     step=global_step,
                     loss=loss,
                     upload=upload_checkpoints,
-                    name=f'{epoch}_{args.block_size}_{args.optimizer}'
+                    name=f'{global_step}_{args.block_size}_{args.optimizer}.pt'
                 )
                 print('Saved!')
             global_step += 1
@@ -535,7 +535,7 @@ if __name__ == "__main__":
         step=global_step,
         loss=loss,
         upload=upload_checkpoints,
-        name=f'{epoch}_{args.block_size}_{args.optimizer}'
+        name=f'{global_step}_{args.block_size}_{args.optimizer}.pt'
     )
     print('Saved!')
     wandb.finish()
