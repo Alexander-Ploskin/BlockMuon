@@ -443,7 +443,7 @@ if __name__ == "__main__":
     parser.add_argument("--max_len", type=int, default=512)
     parser.add_argument("--hidden_size", type=int, default=1024)
     parser.add_argument("--max_steps", type=int, default=None)
-    parser.add_argument("--save_checkpoint_interval", type=int, default=5000)
+    parser.add_argument("--save_checkpoint_interval", type=int, default=100)
     parser.add_argument("--wandb_project", type=str, default="muon-optimizer-experiments-debug")
     parser.add_argument("--upload_checkpoints", type=bool, default=False)
     
@@ -526,4 +526,13 @@ if __name__ == "__main__":
                 )
                 print('Saved!')
             global_step += 1
+    save_checkpoint_to_wandb(
+        model=model,
+        optimizer=optimizer,
+        epoch=epoch,
+        step=global_step,
+        loss=loss,
+        upload=upload_checkpoints
+    )
+    print('Saved!')
     wandb.finish()
