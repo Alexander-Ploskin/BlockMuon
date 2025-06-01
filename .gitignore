@@ -172,3 +172,11 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+*poetry.lock
+
+*.bin
+
+*.pt
+
+wandb/
