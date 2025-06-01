@@ -1,6 +1,6 @@
 # Block Muon Optimizer Experiments
 
-This project implements a block version of the Muon optimizer and experiments with different hyperparameters to study their effects on training dynamics. The Muon optimizer uses matrix orthogonalization via Newton-Schulz iterations to provide more diverse optimization directions compared to traditional optimizers like AdamW[1]. Our implementation focuses on exploring block-wise variants of the algorithm and analyzing the relationship between block size and optimization performance.
+This project implements a block version of the [Muon optimizer]((https://arxiv.org/abs/2502.16982) and experiments with different hyperparameters to study their effects on training dynamics. The Muon optimizer uses matrix orthogonalization via Newton-Schulz iterations to provide more diverse optimization directions compared to traditional optimizers like AdamW. Our implementation focuses on exploring block-wise variants of the algorithm and analyzing the relationship between block size and optimization performance.
 
 ## Prerequisites
 
