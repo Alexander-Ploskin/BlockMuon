@@ -327,7 +327,7 @@ class BlockMuon(torch.optim.Optimizer):
         return loss
 
 
-def get_model_and_dataloader(model_name, dataset_name, hidden_size, split):
+def get_model_and_dataloader(model_name, dataset_name, hidden_size, split, max_len):
     name2path = {
         "openwebtext-100k": "Elriggs/openwebtext-100k",
         "openwebtext-1k": "stas/openwebtext-synthetic-testing"
@@ -339,7 +339,7 @@ def get_model_and_dataloader(model_name, dataset_name, hidden_size, split):
         )
     else:
         assert 0, f"model {model_name} not supported"
-    train_dataset = MoonDataset(dataset_name, train_dataset, tokenizer)
+    train_dataset = MoonDataset(dataset_name, train_dataset, tokenizer, max_length=max_len)
     train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
 
     if model_name == "qwen":
@@ -440,6 +440,7 @@ if __name__ == "__main__":
     parser.add_argument("--block_size", type=int, default=256)
     parser.add_argument("--dataset", type=str, default="openwebtext-100k")
     parser.add_argument("--split", type=str, default="train")
+    parser.add_argument("--max_len", type=int, default=512)
     parser.add_argument("--hidden_size", type=int, default=1024)
     parser.add_argument("--max_steps", type=int, default=None)
     parser.add_argument("--save_checkpoint_interval", type=int, default=5000)
@@ -469,8 +470,9 @@ if __name__ == "__main__":
     )
     
     model, train_loader = get_model_and_dataloader(
-        args.model, args.dataset, args.hidden_size, args.split
+        args.model, args.dataset, args.hidden_size, args.split, args.max_len
     )
+    print('len: ', len(train_loader))
     optimizer = get_optimizer(
         args.optimizer, model, lr=args.lr, block_size=args.block_size
     )
