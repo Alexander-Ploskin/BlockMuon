@@ -327,7 +327,7 @@ class BlockMuon(torch.optim.Optimizer):
         return loss
 
 
-def get_model_and_dataloader(model_name, dataset_name, hidden_size, split, max_len):
+def get_model_and_dataloader(model_name, dataset_name, hidden_size, split, max_len, batch_size):
     name2path = {
         "openwebtext-100k": "Elriggs/openwebtext-100k",
         "openwebtext-1k": "stas/openwebtext-synthetic-testing"
@@ -340,7 +340,7 @@ def get_model_and_dataloader(model_name, dataset_name, hidden_size, split, max_l
     else:
         assert 0, f"model {model_name} not supported"
     train_dataset = MoonDataset(dataset_name, train_dataset, tokenizer, max_length=max_len)
-    train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
     if model_name == "qwen":
         config = Qwen2Config(
@@ -404,9 +404,9 @@ def get_optimizer(optimizer_name, model, lr=1e-3, wd=0.1, block_size=64):
         assert 0, "optimizer not supported"
 
 
-def save_checkpoint_to_wandb(model, optimizer, epoch, step, loss, upload):
+def save_checkpoint_to_wandb(model, optimizer, epoch, step, loss, upload, name):
     """Save model checkpoint to W&B as an artifact."""
-    checkpoint_path = f"checkpoint_epoch_{epoch}_step_{step}.pt"
+    checkpoint_path = f"{name}.pt"
     
     torch.save({
         'epoch': epoch,
@@ -440,6 +440,7 @@ if __name__ == "__main__":
     parser.add_argument("--block_size", type=int, default=256)
     parser.add_argument("--dataset", type=str, default="openwebtext-100k")
     parser.add_argument("--split", type=str, default="train")
+    parser.add_argument("--batch_size", type=int, default=8)
     parser.add_argument("--max_len", type=int, default=512)
     parser.add_argument("--hidden_size", type=int, default=1024)
     parser.add_argument("--max_steps", type=int, default=None)
@@ -470,7 +471,7 @@ if __name__ == "__main__":
     )
     
     model, train_loader = get_model_and_dataloader(
-        args.model, args.dataset, args.hidden_size, args.split, args.max_len
+        args.model, args.dataset, args.hidden_size, args.split, args.max_len, args.batch_size
     )
     print('len: ', len(train_loader))
     optimizer = get_optimizer(
@@ -522,7 +523,8 @@ if __name__ == "__main__":
                     epoch=epoch,
                     step=global_step,
                     loss=loss,
-                    upload=upload_checkpoints
+                    upload=upload_checkpoints,
+                    name=f'{epoch}_{args.block_size}_{args.optimizer}'
                 )
                 print('Saved!')
             global_step += 1
@@ -532,7 +534,8 @@ if __name__ == "__main__":
         epoch=epoch,
         step=global_step,
         loss=loss,
-        upload=upload_checkpoints
+        upload=upload_checkpoints,
+        name=f'{epoch}_{args.block_size}_{args.optimizer}'
     )
     print('Saved!')
     wandb.finish()

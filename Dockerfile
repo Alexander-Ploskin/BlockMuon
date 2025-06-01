@@ -36,7 +36,10 @@ CMD ["--model", "qwen", \
      "--block_size", "256", \
      "--dataset", "openwebtext-100k", \
      "--split", "train", \
+     "--batch_size", "8", \
+     "--max_len", "512", \
      "--hidden_size", "1024", \
+     "--max_steps", "None", \
      "--save_checkpoint_interval", "5000", \
      "--wandb_project", "muon-optimizer-experiments-debug", \
      "--upload_checkpoints", "False"]
