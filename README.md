@@ -19,7 +19,7 @@ docker build -t block-muon-experiments .
 
 Run experiments:
 ```bash
-docker run --gpus all -v $(pwd)/results:/workspace/results block-muon-experiments \
+docker run --gpus all -e WANDB_API_KEY=<YOUR KEY> block-muon-experiments \
     --model qwen \
     --optimizer muon \
     --lr 1e-3 \
